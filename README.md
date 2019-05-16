@@ -19,8 +19,11 @@ async API
 ---------
 
 read_param(param_id) - gets device property value
+
 write_param(param_id, value) - writes the value to the property of the device
+
 is_device() - should return true if the device at the current address can be served by this class
+
 find_devices() - returns the list of addresses of these devices. The function calls is_device for each modbus address.
 
 Licensing
@@ -29,7 +32,7 @@ Licensing
 aiocoap is published under the Apache License 2.0, see LICENSE_ for details.
 
 
-Copyright (c) 2019 Mikhail Razgovorov <http://razgovorov.ru>
+Copyright (c) 2019 Mikhail Razgovorov
 
 In my work, the code of another library was used to serialize the protocol, unfortunately during the implementation I forgot which one. I apologize to the author. Ready upon request to specify his name here.
 

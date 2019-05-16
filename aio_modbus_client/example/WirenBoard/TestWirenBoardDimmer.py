@@ -2,8 +2,7 @@ import unittest
 import asyncio
 import socket
 # from pymodbus.transaction import ModbusRtuFramer as ModbusFramer
-from example.WirenBoard import async_test
-from example.WirenBoard import WirenBoardDimmer as Device
+from aio_modbus_client.example.WirenBoard import async_test, WirenBoardDimmer as Device
 # from buject.ModbusUsrTcp232.backup.ModbusTcpUsr340 import ModbusTcpUsr340 as Modbus
 # from aio_modbus_client.ModbusTcpHF5111 import ModbusTcpHF5111 as Modbus
 from aio_modbus_client.TransportSocket import TransportSocket as Modbus
