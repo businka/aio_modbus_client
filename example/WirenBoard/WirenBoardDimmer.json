@@ -1,0 +1,102 @@
+ [
+    {
+      "id": "level_green",
+      "table": "holding",
+      "address": 0,
+      "formatter": "integer",
+      "minimum": 0,
+      "maximum": 255,
+      "default": "0"
+    },
+    {
+      "id": "level_red",
+      "table": "holding",
+      "address": 1,
+      "formatter": "integer",
+      "minimum": 0,
+      "maximum": 255,
+      "default": "0"
+    },
+    {
+      "id": "level_blue",
+      "table": "holding",
+      "address": 2,
+      "formatter": "integer",
+      "minimum": 0,
+      "maximum": 255,
+      "default": "0"
+    },
+    {
+      "id": "dimmer",
+      "description": "dimming (x10ms)",
+      "table": "holding",
+      "address": 13,
+      "formatter": "integer",
+      "minimum": 0,
+      "maximum": 255,
+      "default": "100"
+    },
+    {
+      "id": "slave_id",
+      "table": "holding",
+      "address": 128,
+      "formatter": "integer",
+      "minimum": 1,
+      "maximum": 254,
+      "default": "100"
+    },
+    {
+      "id": "model",
+      "table": "input",
+      "address": 200,
+      "readOnly": true,
+      "formatter": "string",
+      "maximum": 6
+    },
+    {
+      "id": "version",
+      "table": "input",
+      "address": 220,
+      "readOnly": true,
+      "formatter": "string",
+      "maximum": 21
+    },
+    {
+      "id": "RGB",
+      "description": "[R,G,B], black = power off",
+      "table": "holding",
+      "formatter": "array",
+      "pattern": "level_green",
+      "address": 0,
+      "maximum": 3,
+      "default": "255,255,255"
+    },
+    {
+      "id": "color",
+      "description": "[R,G,B], black = power off",
+      "table": "calc",
+      "formatter": "array",
+      "address": 0,
+      "maximum": 3,
+      "pattern": "level_green",
+      "default": "255,255,255"
+    },
+
+    {
+      "id": "brightness",
+      "description": "percent 0-100%, 0 = power off",
+      "table": "calc",
+      "formatter": "integer",
+      "minimum": 1,
+      "maximum": 100,
+      "default": "100"
+    },
+    {
+      "id": "power",
+      "description": "power switch on/off",
+      "table": "calc",
+      "formatter": "boolean",
+      "default": false
+    }
+ ]
+

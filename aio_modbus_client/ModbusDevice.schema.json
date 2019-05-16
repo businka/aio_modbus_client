@@ -1,0 +1,86 @@
+{
+  "$schema": "http://json-schemas.org/draft-04/schema#",
+  "description": "",
+  "id": "",
+  "type": "object",
+  "properties": {
+    "deviceRegister": {
+      "type": "array",
+      "items": [
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+
+              //              "holding"
+            },
+            "title": {
+              "type": "string"
+
+              //              "holding"
+            },
+            "description": {
+              "type": "string"
+
+              //              "holding"
+            },
+            "table": {
+              "type": "string"
+
+              //              "holding"
+            },
+            "address": {
+              "type": "number"
+              //              0
+            },
+            "formatter": {
+              "type": "string"
+            },
+            "pattern": {
+              "type": "string"
+            },
+            "minimum": {
+              "type": "number"
+            },
+            "maximum": {
+              "type": "number"
+            },
+            "default": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "serialPort": {
+      "type": "object",
+      "properties": {
+        "baudRate": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 255,
+          "default": 0
+        },
+        "parity": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 255,
+          "default": 0
+        },
+        "dataBits": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 255,
+          "default": 0
+        },
+        "stopBits": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 255,
+          "default": 0
+        }
+      }
+    }
+  }
+}
