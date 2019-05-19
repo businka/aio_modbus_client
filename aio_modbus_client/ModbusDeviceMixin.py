@@ -44,9 +44,9 @@ class ModbusDeviceMixin:
         return formatter.from_default(self, self.config[param_name], self.config[param_name]['default'])
 
     def load_config(self):
-        config_path = '{0}\{1}.json'.format(os.path.dirname(self.file), self.__class__.__name__)
+        config_path = '{0}/{1}.json'.format(os.path.dirname(self.file), self.__class__.__name__)
         try:
-            with open(config_path, 'r', encoding='utf-8') as file:
+            with open(os.path.normpath(config_path), 'r', encoding='utf-8') as file:
                 raw_data = json.load(file)
             config = {}
             if raw_data:
