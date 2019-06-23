@@ -1,4 +1,4 @@
-from six import byte2int, int2byte
+# from six import byte2int, int2byte
 
 
 def __generate_crc16_table():
@@ -72,7 +72,8 @@ def rtuFrameSize(data, byte_count_pos):
     field, and finally increment the sum by three (one byte for the
     byte count field, two for the CRC).
     """
-    return byte2int(data[byte_count_pos]) + byte_count_pos + 3
+    # return byte2int(data[byte_count_pos]) + byte_count_pos + 3
+    return data[byte_count_pos][0] + byte_count_pos + 3
 
 
 # --------------------------------------------------------------------------- #
@@ -92,13 +93,14 @@ def pack_bitstring(bits):
             packed += 128
         i += 1
         if i == 8:
-            ret += int2byte(packed)
+            ret += bytes((packed,))  #int2byte(packed)
             i = packed = 0
         else:
             packed >>= 1
     if 0 < i < 8:
         packed >>= (7 - i)
-        ret += int2byte(packed)
+        # ret += int2byte(packed)
+        ret += bytes((packed,))
     return ret
 
 
@@ -118,13 +120,13 @@ def unpack_bitstring(string):
             value >>= 1
     return bits
 
-
-def make_byte_string(s):
-    """
-    Returns byte string from a given string, python3 specific fix
-    :param s:
-    :return:
-    """
-    if isinstance(s, string_types):
-        s = s.encode()
-    return s
+#
+# def make_byte_string(s):
+#     """
+#     Returns byte string from a given string, python3 specific fix
+#     :param s:
+#     :return:
+#     """
+#     if isinstance(s, string_types):
+#         s = s.encode()
+#     return s
