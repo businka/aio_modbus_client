@@ -1,7 +1,8 @@
-from .DataFormatter import *
+# from .DataFormatter import *
 from .ModbusDeviceMixin import ModbusDeviceMixin
-import os
-import json
+import asyncio
+# import os
+# import json
 import logging
 
 _logger = logging.getLogger(__name__)
@@ -31,16 +32,30 @@ class ModbusDevice(ModbusDeviceMixin):
     async def is_device(self):
         raise NotImplemented()
 
-    async def find_devices(self):
+    async def find_devices(self, **kwargs):
+        begin = kwargs.get('begin', 1)
+        end = kwargs.get('end', 253)
+        begin = kwargs.get('begin', 0x6e) #1
+        end = kwargs.get('end', 0x70) #253
+        notify = kwargs.get('notify')
+        timeout_exception = kwargs.get('timeout_exception', asyncio.TimeoutError)
         result = []
         current_slave_id = self.slave_id
-        for i in range(253):
-            self.slave_id = i + 1
-            print(self.slave_id)
+        i = begin
+        found = 0
+        while i <= end:
+            self.slave_id = i
+            await notify({
+                'progress': round((i - begin) * 100 / (end - begin + 1)),
+                'message': f'check slave {self.slave_id} {self.__class__.__name__} ',
+                'found': found
+            })
             try:
                 if await self.is_device():
                     result.append(self.slave_id)
-            except Exception as e:
+                    found += 1
+            except timeout_exception:
                 pass
+            i += 1
         self.slave_id = current_slave_id
         return result

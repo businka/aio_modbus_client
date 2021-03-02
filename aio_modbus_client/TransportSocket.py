@@ -10,14 +10,17 @@ class TransportSocket(Transport):
         self._reader = None
         self._writer = None
 
-    async def connect(self):
-        try:
-            if not self._reader:
-                self._reader, self._writer = await asyncio.open_connection(self.host, self.port)
-                return True
+    async def connect(self, serial):
+        if not self._writer or self._writer.transport.is_closing():
+            if not self.host:
+                raise KeyError('host')
+            if not self.port:
+                raise KeyError('port')
+            self.logger.debug(f'connection begin {self.host}:{self.port}')
+            self._reader, self._writer = await asyncio.open_connection(self.host, self.port)
+            self.logger.debug(f'connection complete {self.host}:{self.port}')
             return True
-        except Exception as e:
-            raise Exception(str(e)) from None
+        return True
 
     async def write(self, data):
         return self._writer.write(data)

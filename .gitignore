@@ -1,4 +1,7 @@
 .idea
-/*.egg-info
-/build
+__pycache__
+node_modules
+/venv
 /dist
+/build
+*.egg-info

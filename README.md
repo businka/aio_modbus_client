@@ -1,11 +1,12 @@
+#aio modbus client
+
 The main purpose is to create classes of devices connected via modbus by describing their properties.
 
 Not intended to transfer bytes to modbus.
 
 The library allows you to organize work with devices connected to a TCP modbus server, and a serial port. It also assumes the possibility of having devices operating at different speeds and different connection parameters on the bus.
 
-Use
----
+##Use
 
 1. Create your class inheriting from ModbusDevice. It is important to specify the static variable file in your class file = __file__
 2. Create a JSON file with the description of the registers of your device
@@ -15,8 +16,8 @@ see example: example / Wirenboard / TestWirenBoardDimmer.py
 
 if someone likes the implementation, I will add documentation
 
-async API
----------
+##async API
+
 
 read_param(param_id) - gets device property value
 
@@ -26,14 +27,9 @@ is_device() - should return true if the device at the current address can be ser
 
 find_devices() - returns the list of addresses of these devices. The function calls is_device for each modbus address.
 
-Licensing
----------
+##Licensing
 
-aiocoap is published under the Apache License 2.0, see LICENSE_ for details.
+This published under the MIT License, see [LICENSE](LICENSE) for details.
 
 
-Copyright (c) 2019 Mikhail Razgovorov
-
-In my work, the code of another library was used to serialize the protocol, unfortunately during the implementation I forgot which one. I apologize to the author. Ready upon request to specify his name here.
-
-.. _LICENSE: LICENSE
+Copyright (c) 2019 Mikhail Razgovorov 

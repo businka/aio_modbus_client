@@ -6,18 +6,23 @@ import struct
 import asyncio
 
 
-class ModbusProtocolRtu(ModbusProtocol):
+class ModbusProtocolTcp(ModbusProtocol):
+
+    def __init__(self, transport, **kwargs):
+        super().__init__(transport, **kwargs)
+        self._transaction_id = 1
+
     def encode(self, message):
         """
         Creates a ready to send modbus packet
 
         :param message: The populated request/response to send
         """
-        data = message.encode()
-        packet = struct.pack('>BB',
+        data = struct.pack('>BB',
                              message.slave_id,
-                             message.function_code) + data
-        packet += struct.pack(">H", computeCRC(packet))
+                             message.function_code)
+        data += message.encode()
+        packet = struct.pack(">HHH", self._transaction_id, 0, len(data)) + data
         return packet
 
     def decode(self, data):
@@ -30,11 +35,12 @@ class ModbusProtocolRtu(ModbusProtocol):
             data=data, crc=crc, current_crc=current_crc))
 
     async def execute(self, message, serial):
-        await self.transport.connect(serial)
+        if not await self.transport.connect(serial):
+            raise Exception('modbus transport not connected')
         request_data = self.encode(message)
         if self.last_request:
             if time.time() - self.last_request < 0.003:
-                # print('MobusProtocol pause')
+                print('pause')
                 await asyncio.sleep(0.003)
             self.last_request = time.time()
         await self.transport.write(request_data)
@@ -42,11 +48,10 @@ class ModbusProtocolRtu(ModbusProtocol):
         response = message.response()
         try:
             response.decode(self.decode(data))
-        # except asyncio.TimeoutError:
-        #     await self.repair() # вычитываем все что есть
-        except BadCRCResponse as err:
-            await self.repair() # вычитываем все что есть
-            raise err from err
+        except asyncio.TimeoutError:
+            await asyncio.wait_for(self.read_response(254), self.timeout)
+        except BadCRCResponse:
+            await self.repair()
         return response
 
     async def repair(self):
@@ -57,7 +62,7 @@ class ModbusProtocolRtu(ModbusProtocol):
 
     async def read_response(self, pdu_size):
         data = await self.transport.read(2)
-        if data[1] >= 0x80:  # exception func_code
+        if data[8] >= 0x80:  # exception func_code
             data += await self.transport.read(3)  # error_code + CRC
             raise ModbusException(data[2])
         data += await self.transport.read(pdu_size + 2)
