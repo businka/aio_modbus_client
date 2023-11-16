@@ -31,8 +31,7 @@ class ModbusProtocolTcp(ModbusProtocol):
         if crc == current_crc:
             return data[2: -2]
         # if not checkCRC(data[:-2], struct.unpack(">H", data[-2:])[0]):
-        raise BadCRCResponse('Bad CRC data:{data} crc:{crc} current_crc:{current_crc}'.format(
-            data=data, crc=crc, current_crc=current_crc))
+        raise BadCRCResponse(f'Bad CRC data:{data} crc:{crc} current_crc:{current_crc}')
 
     async def execute(self, message, serial):
         if not await self.transport.connect(serial):

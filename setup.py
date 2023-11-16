@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="aio_modbus_client",
-    version="0.0.4",
+    version="0.1.0",
     author="Mikhail Razgovorov",
     author_email="1338833@gmail.com",
     description="Easy work with modbus device. You do not need to know the protocol.",
@@ -24,6 +24,6 @@ setuptools.setup(
     ],
     python_requires='>=3.5.3',
     install_requires=[
-        'serial_asyncio',
+        'pyserial-asyncio',
     ]
 )

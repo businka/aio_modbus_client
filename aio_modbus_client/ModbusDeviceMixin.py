@@ -66,7 +66,7 @@ class ModbusDeviceMixin:
             ))
 
     async def _read_calc(self, param_id, param):
-        return await getattr(self, '_read_calc_{}'.format(param_id))(param_id, param)
+        return await getattr(self, f'_read_calc_{param_id}'.format(param_id))(param_id, param)
 
     async def _read_input(self, param_id, param):
         formatter = self.get_formatter(param['formatter'])

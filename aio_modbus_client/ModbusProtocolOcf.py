@@ -1,25 +1,31 @@
-from .ModbusProtocol import ModbusProtocol
 import base64
+
+from .ModbusProtocol import ModbusProtocol
+from bubot_helpers.ExtException import ExtException
 
 
 class ModbusProtocolOcf(ModbusProtocol):
 
     async def execute(self, message, serial):
-        data = await self.transport.request(
-            'update',
-            self.transport.link_master,
-            dict(
-                slave=message.slave_id,
-                function=message.function_code,
-                pdu=base64.b64encode(message.encode()).decode(),
-                answerSize=message.get_response_pdu_size(),
-                **serial
+        try:
+            resp = await self.transport.send_request(
+                'update',
+                self.transport.link_master,
+                dict(
+                    slave=message.slave_id,
+                    function=message.function_code,
+                    pdu=base64.b64encode(message.encode()).decode(),
+                    answerSize=message.get_response_pdu_size(),
+                    **serial
+                )
             )
-        )
-        data = base64.b64decode(data.cn.encode())
-        response = message.response()
-        response.decode(data)
-        return response
+            payload = resp.decode_payload()
+            data = base64.b64decode(payload)
+            response = message.response()
+            response.decode(data)
+            return response
+        except Exception as err:
+            raise ExtException(parent=err)
 
 
 class OcfMessageRequest:

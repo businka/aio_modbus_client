@@ -1,3 +1,5 @@
+from math import ceil
+
 class DataFormatter:
     @classmethod
     def from_default(cls, device, param, value):
@@ -23,7 +25,8 @@ class DataFormatterInteger(DataFormatter):
 
     @classmethod
     def get_register_count(cls, device, param):
-        return param.get('reg_count', 1)
+        maximum = param.get('maximum', 255)
+        return ceil((maximum.bit_length() + 7) // 8 / 2)
 
     @classmethod
     def encode(cls, device, param, value):
@@ -64,14 +67,14 @@ class DataFormatterArray(DataFormatter):
 
     @classmethod
     def get_register_count(cls, device, param):
-        item_param = device.config[param['pattern']]
+        item_param = param['item']
         item_formatter = device.get_formatter(item_param['formatter'])
         return item_formatter.get_register_count(device, item_param) * param['maximum']
 
     @classmethod
     def encode(cls, device, param, value):
         result = []
-        item_param = device.config[param['pattern']]
+        item_param = param['item']
         item_formatter = device.get_formatter(item_param['formatter'])
         for _value in value:
             result.append(item_formatter.encode(device, item_param, _value))
@@ -79,7 +82,7 @@ class DataFormatterArray(DataFormatter):
 
     @classmethod
     def decode(cls, device, param, value):
-        item_param = device.config[param['pattern']]
+        item_param = param['item']
         item_formatter = device.get_formatter(item_param['formatter'])
         size = item_formatter.get_register_count(device, item_param)
         result = []

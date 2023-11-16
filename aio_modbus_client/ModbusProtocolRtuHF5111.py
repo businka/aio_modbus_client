@@ -15,11 +15,14 @@ class ModbusProtocolRtuHF5111(ModbusProtocolRtu):
         return data
 
     async def read_ff(self, size):
-        data = b''
+        result = b''
         receive_size = size
         while receive_size > 0:
-            data += await self.transport.read(receive_size)
+            data = await self.transport.read(receive_size)
+            if data == b'':
+                break
             while data and data[0] == 0xff:
                 data = data[1:]
-            receive_size = size - len(data)
-        return data
+            result += data
+            receive_size = size - len(result)
+        return result

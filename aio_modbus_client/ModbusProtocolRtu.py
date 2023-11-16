@@ -1,9 +1,10 @@
-from .ModbusProtocol import ModbusProtocol
-from .ModbusException import ModbusException, BadCRCResponse
-from .utilites import computeCRC, checkCRC
-import time
-import struct
 import asyncio
+import struct
+import time
+
+from .ModbusException import ModbusException, BadCRCResponse
+from .ModbusProtocol import ModbusProtocol
+from .utilites import computeCRC
 
 
 class ModbusProtocolRtu(ModbusProtocol):
@@ -26,8 +27,7 @@ class ModbusProtocolRtu(ModbusProtocol):
         if crc == current_crc:
             return data[2: -2]
         # if not checkCRC(data[:-2], struct.unpack(">H", data[-2:])[0]):
-        raise BadCRCResponse('Bad CRC data:{data} crc:{crc} current_crc:{current_crc}'.format(
-            data=data, crc=crc, current_crc=current_crc))
+        raise BadCRCResponse(f'Bad CRC data:{data} crc:{crc} current_crc:{current_crc}')
 
     async def execute(self, message, serial):
         await self.transport.connect(serial)
@@ -45,13 +45,20 @@ class ModbusProtocolRtu(ModbusProtocol):
         # except asyncio.TimeoutError:
         #     await self.repair() # вычитываем все что есть
         except BadCRCResponse as err:
-            await self.repair() # вычитываем все что есть
-            raise err from err
+            await self.repair()  # вычитываем все что есть
+            raise err
         return response
 
     async def repair(self):
+        result = b''
         try:
-            await asyncio.wait_for(self.read_response(254), self.timeout)
+            while True:
+                try:
+                    result += await asyncio.wait_for(self.transport.read(1), 1)
+                except asyncio.TimeoutError:
+                    if result:
+                        print(result)
+                    break
         except asyncio.TimeoutError:
             pass
 
