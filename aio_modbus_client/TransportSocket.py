@@ -11,7 +11,7 @@ class TransportSocket(Transport):
         self._writer = None
 
     async def connect(self, serial):
-        if not self._writer or self._writer.transport.is_closing():
+        if not self._writer or self._writer._transport.is_closing():
             if not self.host:
                 raise KeyError('host')
             if not self.port:

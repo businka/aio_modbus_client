@@ -15,14 +15,10 @@ class TestWirenBoardDimmer(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         logging.basicConfig(level=logging.DEBUG)
-        cls.slave_id = 0x78
-        cls.address = ('192.168.1.25', 502)
+        cls.slave_id = 148
+        cls.address = 'COM5'
         cls.device = Device(cls.slave_id, Protocol(Modbus(host=cls.address[0], port=cls.address[1])))
 
-    def setUp(self):
-        pass
-
-    @async_test
     async def tearDown(self):
         await self.device.close()
 
@@ -115,7 +111,7 @@ class TestWirenBoardDimmer(unittest.TestCase):
 
     def test_id_device(self):
         # self.device.modbus.connect()
-        self.device.transport.timeout = 0.5
+        self.device._transport.timeout = 0.5
         value = self.device.is_device()
         self.assertEqual(value, True)
         print(value)
